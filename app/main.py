@@ -1,11 +1,25 @@
 from fastapi import FastAPI, Depends, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.auth import verify_api_key
 from app.cache import cache
 from app.sheets import get_google_sheet_data
 
-app = FastAPI(title="Google Sheet API", version="1.0.0")
+app = FastAPI(title="Google Sheet API", version="1.0.0")    
+
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS, 
+    allow_credentials=True,
+    allow_methods=["GET", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 @app.get("/sheet-data")
 def sheet_data(
